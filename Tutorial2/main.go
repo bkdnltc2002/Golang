@@ -41,6 +41,14 @@ func split (sum int) (x,y int){
 
 var i,j int = 1, 2
 
+func zero()  {
+	var i int
+	var f float64
+	var b bool
+	var s string
+	fmt.Printf("%v %v %v %q\n",i,f,b,s)
+}
+
 func main() {
 	// packages()
 	// imports()
@@ -57,7 +65,8 @@ func main() {
 	// k := 3
 	// c, python, java := true, false, "no!"
 	// fmt.Println(i,j,k,c,python,java)
-	fmt.Printf("Type: %T Value: %v\n", ToBe, ToBe)
-	fmt.Printf("Type: %T Value: %v\n", MaxInt, MaxInt)
-	fmt.Printf("Type: %T Value: %v\n", z, z)
+	// fmt.Printf("Type: %T Value: %v\n", ToBe, ToBe)
+	// fmt.Printf("Type: %T Value: %v\n", MaxInt, MaxInt)
+	// fmt.Printf("Type: %T Value: %v\n", z, z)
+	// zero()
 }
