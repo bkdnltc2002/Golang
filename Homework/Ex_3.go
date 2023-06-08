@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 )
 
@@ -17,7 +17,7 @@ func main() {
 	file, err := os.Open("students.json")
 	defer file.Close()
 
-	data, _ := ioutil.ReadAll(file)
+	data, _ := io.ReadAll(file)
 
 	var students []Student
 
@@ -26,7 +26,7 @@ func main() {
 		fmt.Println("Error encoding JSON:", err)
 	}
 
-	for _, student := range students {
-		fmt.Println(student)
+	for i := range students {
+		fmt.Println(students[i])
 	}
 }

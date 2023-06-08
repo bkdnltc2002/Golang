@@ -23,6 +23,12 @@ func main(){
 	file,err := os.Create("students.json")
 	defer file.Close()
 
+	data,err:= json.MarshalIndent(students,""," ")
+	if err!= nil{
+		fmt.Println("Error encoding JSON:",err)
+	}
+	fmt.Println(string(data))
+
 	encoder :=json.NewEncoder(file)
 	err = encoder.Encode(students)
 	if err!= nil{

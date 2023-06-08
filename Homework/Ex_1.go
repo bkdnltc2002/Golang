@@ -15,6 +15,7 @@ func Sqrt(i []int) []int{
 func Update_Sqrt(i []int) []int{
 	for index,num := range i {
 		i[index] = num*num
+		
 	}
 	return i
 }
