@@ -1,0 +1,5 @@
+gorm/mysql 
+viet 1 file docker-composer.yaml
+go mongo driver/ mongo
+message queue/redis
+concurrency, channel, gorountines
