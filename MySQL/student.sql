@@ -1,24 +1,32 @@
-use Students;
 
-create table classes(
-	class_id int primary key,
-	class_name varchar(50)
+create database Students
+
+use Students
+
+drop database Students
+
+create table `classes`(
+	class_id int not null auto_increment,
+	class_name varchar(50),
+	primary key(class_id)
 )
 
-create table student(
-	student_id int primary key,
+create table `student`(
+	student_id int not null ,
 	student_name varchar(50),
 	class_id int,
-	foreign key (class_id) references classes(class_id)
+	foreign key (class_id) references classes(class_id),
+	primary key(student_id, class_id)
 )
 
-create table subject(
-	subject_id int primary key,
-	subject_name varchar(50)
+create table `subject`(
+	subject_id int not null,
+	subject_name varchar(50),
+	primary key(subject_id)
 )
 
 
-create table studentsubject(
+create table `studentsubject`(
 	subject_id int,
 	student_id int,
 	primary key (student_id,subject_id),
@@ -91,3 +99,4 @@ insert into studentsubject (student_id, subject_id) values (7, 16);
 insert into studentsubject (student_id, subject_id) values (8, 17);
 insert into studentsubject (student_id, subject_id) values (9, 18);
 insert into studentsubject (student_id, subject_id) values (10, 19);
+
