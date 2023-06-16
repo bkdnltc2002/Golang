@@ -12,13 +12,17 @@ type Student struct {
 var students []Student
 
 func check_ID(s []Student) []string {
+	idSet := make(map[string]bool)
 	var result []string
-	for _, i := range s {
-		for _, j := range students {
-			if i.ID == j.ID {
-				result = append(result, j.ID)
+
+	for _,student := range students {
+		idSet[student.ID]=true
+	}
+	
+	for _, student := range s {
+		if idSet[student.ID] {
+			result = append(result, student.ID)
 			}
-		}
 	}
 	return result
 }
