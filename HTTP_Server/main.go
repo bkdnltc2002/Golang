@@ -53,7 +53,7 @@ type Student struct{
 	StudentName string
 	ClassID uint
 	ClassInfo Class `gorm:"foreignKey:ClassID;->"`
-	ExamInfo []Exam `gorm:"foreignKey:StudentID;->"`
+	// ExamInfo []Exam `gorm:"foreignKey:StudentID;->"`
 }
 
 type Class struct{
@@ -71,11 +71,11 @@ type StudentSubject struct{
 	SubjectID uint 
 }
 
-type Exam struct{
-	ID uint 
-	StudentID uint
-	Mark uint 
-}
+// type Exam struct{
+// 	ID uint 
+// 	StudentID uint
+// 	Mark uint 
+// }
 
 func getUserHandler(c *gin.Context){
 	db := GetDatabase()
@@ -85,15 +85,23 @@ func getUserHandler(c *gin.Context){
 		c.String(http.StatusInternalServerError, "Failed to fetch data from the database")
 		return
 	}
-	for _,s:= range student{
-		fmt.Printf("%+v\n",s)
+	
+	// for _,s:= range student{
+	// 	fmt.Printf("%+v\n",s)
+	// }
+	var studentName []Student
+	err := db.connection.Preload("ClassInfo").Find(&studentName).Error
+	if err!= nil{
+		log.Fatal(err)
 	}
+	fmt.Println(studentName)
+
 	c.JSON(http.StatusOK, student)
 }
 func main(){
 	r := gin.Default()
 
-	r.GET("/students", getUserHandler)  
+	r.GET("/v1/students", getUserHandler)  
 	r.Run(":8080")
 	defer GetDatabase().CloseConnection()
 }
