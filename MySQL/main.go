@@ -1,49 +1,87 @@
 package main
 
-import(
+import (
+	// "database/sql"
 	"fmt"
 	"log"
+	"sync"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 type Student struct{
-	ID uint `gorm:"primaryKey" json:"student_id"` 
-	Name string `gorm:"type:varchar(50)" json:"student_name"`
-	ClassID uint `gorm:"foreignKey"`
-	// Subjects []Subject `gorm:"many2many:student_subjects;`
+	ID uint 
+	StudentName string
+	ClassID uint
+	ClassInfo Class `gorm:"foreignKey:ClassID;->"`
+	ExamInfo []Exam `gorm:"foreignKey:StudentID;->"`
 }
 
 type Class struct{
-	ID uint `gorm:"primaryKey" json:"class_id"`
-	Name string `gorm:"type:varchar(50)" json:"class_name"`
+	ID uint
+	ClassName string 
 }
 
 type Subject struct{
-	ID uint `gorm:"primaryKey" json:"subject_id"`
-	Name string `gorm:"type:varchar(50)" json:"subject_name"`
+	ID uint 
+	SubjectName string 
+}
+
+type StudentSubject struct{
+	StudentID uint 
+	SubjectID uint 
+}
+
+type Exam struct{
+	ID uint 
+	StudentID uint
+	Mark uint 
+}
+var once sync.Once
+var db *gorm.DB
+
+
+func GetConn() *gorm.DB {
+	once.Do( func(){
+		dsn :="root:root123@tcp(localhost:30001)/Students"
+		db,err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+		if err!= nil{
+			log.Fatal(err)
+		}
+	}) 
+	return db
 }
 
 func main(){
-	dsn :="root:root123@tcp(localhost:30001)/Students"
-	db,err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err!= nil{
+	
+	// Verify if connection is ok
+	conn := GetConn()
+	err := conn.Ping()
+	if err != nil {
 		log.Fatal(err)
 	}
-
+	fmt.Println("Successfully connected ✓")
+	err = conn.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
 	// Automigrate the table
-	err = db.AutoMigrate(&Student{}, &Class{}, &Subject{})
-	if err!= nil{
-		log.Fatal(err)
-	}
+	// err = db.AutoMigrate(&Student{}, &Class{}, &Subject{})
+	// if err!= nil{
+	// 	log.Fatal(err)
+	// }
 
 	// Find a student by ID
-	var student Student
-	err = db.First(&student, 1).Error
+	var students []Student
+	err = db.Preload("ClassInfo").Preload("ExamInfo").Find(&students).Error
 	if err!= nil{
 		log.Fatal(err)
 	}
-	fmt.Println(student)
+	for _,s:= range students{
+		fmt.Printf("%+v\n",s)
+	}
+	
+	
 
 	// Find all students
 	// var students []Student

@@ -1,0 +1,99 @@
+package main
+
+import(
+	"fmt"
+	"log"
+	"net/http"
+	"sync"
+
+	"github.com/gin-gonic/gin"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+)
+
+type Database struct{
+	connection *gorm.DB
+}
+
+var (
+	db *Database
+	dbMutex sync.Mutex
+	once sync.Once
+)
+
+func GetDatabase() *Database{
+	once.Do(func() {
+		dbMutex.Lock()
+		defer dbMutex.Unlock()
+		db = &Database{}
+		db.initConnection()
+	})
+	return db
+}
+
+func (db *Database) initConnection(){
+	dsn :="root:root123@tcp(localhost:30001)/Students"
+	conn,err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+		if err!= nil{
+			log.Fatal(err)
+		}
+	db.connection = conn
+}
+
+func (db *Database) CloseConnection(){
+	sqlDB, err := db.connection.DB()
+	if err != nil {
+		log.Fatalf("Failed to get SQL DB: %v",err)
+	}
+	sqlDB.Close()
+}
+
+type Student struct{
+	ID uint 
+	StudentName string
+	ClassID uint
+	ClassInfo Class `gorm:"foreignKey:ClassID;->"`
+	ExamInfo []Exam `gorm:"foreignKey:StudentID;->"`
+}
+
+type Class struct{
+	ID uint
+	ClassName string 
+}
+
+type Subject struct{
+	ID uint 
+	SubjectName string 
+}
+
+type StudentSubject struct{
+	StudentID uint 
+	SubjectID uint 
+}
+
+type Exam struct{
+	ID uint 
+	StudentID uint
+	Mark uint 
+}
+
+func getUserHandler(c *gin.Context){
+	db := GetDatabase()
+	var student []Student
+	result := db.connection.Find(&student)
+	if result.Error!= nil{
+		c.String(http.StatusInternalServerError, "Failed to fetch data from the database")
+		return
+	}
+	for _,s:= range student{
+		fmt.Printf("%+v\n",s)
+	}
+	c.JSON(http.StatusOK, student)
+}
+func main(){
+	r := gin.Default()
+
+	r.GET("/students", getUserHandler)  
+	r.Run(":8080")
+	defer GetDatabase().CloseConnection()
+}
