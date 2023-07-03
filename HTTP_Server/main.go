@@ -106,7 +106,7 @@ func search(c *gin.Context) {
 	var students []Student
 	err := db.connection.Where("student_name LIKE ?", "%"+searchQuery+"%").Find(&students).Error
 	if err != nil {
-		c.String(http.StatusInternalServerError, "Failed to fetch data from the database")
+		c.String(http.StatusInternalServerError, "The name does not exist")
 		return
 	}
 	c.JSON(http.StatusOK, students)
