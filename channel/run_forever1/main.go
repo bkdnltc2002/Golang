@@ -11,7 +11,7 @@ import (
 
 
 func main() { 
-	// method 1
+	// method 3 (using for loop)
 	// sigs := make(chan os.Signal, 1)
 
 	// signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
@@ -20,7 +20,7 @@ func main() {
 	// <-sigs
 	// fmt.Println("exiting")
 
-	// method 2
+	// method 2 (loop in goroutine)
 	fmt.Println("Press Enter to stop")
 	reader := bufio.NewReader(os.Stdin)
 
@@ -31,4 +31,6 @@ func main() {
 	}
 
 	fmt.Println("Program stopped")
+
+	//web crawler (url_title_content)
 }
