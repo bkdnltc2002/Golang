@@ -36,15 +36,15 @@ func Bubble_Sort(arr []int){
 	fmt.Println("Times of comparing: ",count)
 }
 
-func main(){
-	input := []int{4,6,7,10,3}
-	//Print all element ^2
-	fmt.Println("----- Print all elements ^2-----")
-	fmt.Println(Sqrt(input))
-	fmt.Println(input)
-	fmt.Println("----- Modify all elements to ^2-----")
-	fmt.Println(Update_Sqrt(input))
-	fmt.Println(input)
-	fmt.Println("----- Bubble Sort-----")
-	Bubble_Sort(input)
-}
+// func main(){
+// 	input := []int{4,6,7,10,3}
+// 	//Print all element ^2
+// 	fmt.Println("----- Print all elements ^2-----")
+// 	fmt.Println(Sqrt(input))
+// 	fmt.Println(input)
+// 	fmt.Println("----- Modify all elements to ^2-----")
+// 	fmt.Println(Update_Sqrt(input))
+// 	fmt.Println(input)
+// 	fmt.Println("----- Bubble Sort-----")
+// 	Bubble_Sort(input)
+// }
