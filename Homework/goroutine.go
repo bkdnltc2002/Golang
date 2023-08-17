@@ -5,10 +5,6 @@ import (
 	"time"
 )
 
-type Form interface {
-	int | uint32 | uint64
-}
-
 func Foo1() {
 	for i := 1; i <= 10; i++ {
 		go fmt.Println(i)
