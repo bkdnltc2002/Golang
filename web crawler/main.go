@@ -38,6 +38,12 @@ func main(){
 		e.Request.Visit(e.Attr("href"))
 	})
 
+	c.OnHTML("title",func(e *colly.HTMLElement) {
+		fmt.Println(e.Text)
+		
+	})
+
+
 	fmt.Println("Starting crawl at: ",startingURL)
 
 	if err:= c.Visit(startingURL); err!=nil{
