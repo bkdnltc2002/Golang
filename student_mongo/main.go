@@ -1,0 +1,55 @@
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+)
+
+type WebsiteData struct {
+	URL     string `bson:"url"`
+	Content string `bson:"content"`
+	Title   string `bson:"title"`
+}
+
+func main() {
+	// Create a MongoDB client
+	clientOptions := options.Client().ApplyURI("mongodb://root:example@localhost:27017")
+	client, err := mongo.Connect(context.TODO(), clientOptions)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer client.Disconnect(context.TODO())
+
+	// Select a database and collection
+	collection := client.Database("local").Collection("student")
+
+	// create group stage
+	groupStage := bson.D{
+		{"$group", bson.D{
+			{"_id", "$last_name"},
+			{"averageGrade", bson.D{{"$avg", "$grade"}}},
+			{"firstNames", bson.D{{"$push", "$first_name"}}},
+		}}}
+
+	// pass the pipeline to the Aggregate() method
+	cursor, err := collection.Aggregate(context.TODO(), mongo.Pipeline{groupStage})
+	if err != nil {
+		panic(err)
+	}
+
+	// display the results
+	var results []bson.M
+	if err = cursor.All(context.TODO(), &results); err != nil {
+		panic(err)
+	}
+	for _, result := range results {
+		fmt.Printf("Average Grade: %v \n", result["averageGrade"])
+		fmt.Printf("First names: %v \n", result["firstNames"])
+	}
+
+}
