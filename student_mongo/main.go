@@ -33,7 +33,10 @@ func main() {
 		{"$group", bson.D{
 			{"_id", "$last_name"},
 			{"averageGrade", bson.D{{"$avg", "$grade"}}},
+			{"Grade", bson.D{{"$push", "$grade"}}},
 			{"firstNames", bson.D{{"$push", "$first_name"}}},
+			{"lastNames", bson.D{{"$first", "$last_name"}}},
+			{"Quantity", bson.D{{"$count", bson.D{}}}},
 		}}}
 
 	// pass the pipeline to the Aggregate() method
@@ -49,7 +52,10 @@ func main() {
 	}
 	for _, result := range results {
 		fmt.Printf("Average Grade: %v \n", result["averageGrade"])
+		fmt.Printf("Grade: %v \n", result["Grade"])
 		fmt.Printf("First names: %v \n", result["firstNames"])
+		fmt.Printf("Last names: %v \n", result["lastNames"])
+		fmt.Printf("Quantity: %v \n\n", result["Quantity"])
 	}
 
 }
