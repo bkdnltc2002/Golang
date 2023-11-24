@@ -2,21 +2,34 @@ package main
 
 import (
 	"fmt"
+	"slices"
+ 
 )
 
+func contain(v int, s []int)bool{
+	return slices.Contains(s,v)
+}
+
+func containv2(a []int, b []int)[]int{
+	result := []int{}
+	bmap :=make(map[int]struct{})
+
+	for _, val := range b {
+		bmap[val] = struct{}{}
+	}
+
+	for _, val := range a{
+		if _, ok := bmap[val]; ok{
+			result = append(result, val)
+		}
+	}
+	return result
+}
+
 func main(){
-	slice := make([]int,3,6)
-	slice[0]=1
-	slice[1]=2
-	slice[2]=3
-	fmt.Println(len(slice),cap(slice))
-	slice1 := slice
-	slice = append(slice, 0)
-	slice = append(slice, 5)
-	slice = append(slice, 7)
-	slice = append(slice, 11)
-	fmt.Println(len(slice),cap(slice))
-	slice[0]= 20
-	fmt.Println(slice)
-	fmt.Println(slice1)
+	s := []int {1,2,3,4,5}
+	s2:= []int {4,6,3,8,9}
+	v:= 6
+	fmt.Println(contain(v,s))
+	fmt.Println(containv2(s,s2))
 }
