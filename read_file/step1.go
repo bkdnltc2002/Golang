@@ -28,7 +28,14 @@ func getFileSize(url string) (int64, error) {
 	return size, nil
 }
 
-func createFile(body io.ReadCloser, filename string) {
+func createFile(url string, filename string) {
+	// Send an HTTP GET request to the URL
+	response, err := http.Get(url)
+	if err != nil {
+		fmt.Println("Error sending GET request:", err)
+		return
+	}
+	defer response.Body.Close()
 
 	name := filename + ".txt"
 	// Create a new file to save the downloaded content
@@ -40,7 +47,7 @@ func createFile(body io.ReadCloser, filename string) {
 	defer outputFile.Close()
 
 	// Copy the content from the HTTP response to the output file
-	_, err = io.Copy(outputFile, body)
+	_, err = io.Copy(outputFile, response.Body)
 	if err != nil {
 		fmt.Println("Error copying content to the output file:", err)
 	}
@@ -49,6 +56,8 @@ func createFile(body io.ReadCloser, filename string) {
 	if err != nil {
 		fmt.Println("Error writing to file:", err)
 	}
+
+	fmt.Printf("Created files successfully")
 }
 
 func main() {
@@ -64,17 +73,10 @@ func main() {
 
 	fmt.Printf("The file size of '%s' is %d bytes.\n", url, size)
 
-	// Send an HTTP GET request to the URL
-	response, err := http.Get(url)
-	if err != nil {
-		fmt.Println("Error sending GET request:", err)
-		return
+	// List of filenames you want to create
+	filenames := []string{"Thanh", "Thang"}
+
+	for _, filename := range filenames {
+		createFile(url, filename)
 	}
-
-	createFile(response.Body, "Thanh")
-	createFile(response.Body, "Thang")
-	defer response.Body.Close()
-
-	fmt.Printf("Created files successfully")
-
 }
